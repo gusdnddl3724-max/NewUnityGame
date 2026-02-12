@@ -3,13 +3,6 @@ using UnityEngine.Tilemaps;
 
 public class BoardManager : MonoBehaviour
 {
-    public PlayerController Player;
-    private Grid m_Grid;
-
-    public Vector3 CellToWorld(Vector2Int cellIndex)
-    {
-        return m_Grid.GetCellCenterWorld((Vector3Int)(cellIndex));
-    }
     public class CellData
     {
         public bool Passable;
@@ -17,13 +10,14 @@ public class BoardManager : MonoBehaviour
     }
     public CellData[,] m_BoardData;
     private Tilemap m_tilemap;
+    private Grid m_Grid;
 
     public int width;
     public int height;
     public Tile[] GroundTiles;
     public Tile[] WallTiles;
 
-    void Start()
+    public void Init()
     {
         m_tilemap = GetComponentInChildren<Tilemap>();// 컴포넌트 가져오기
         m_Grid = GetComponentInChildren<Grid>();// 그리드 컴포넌트 가져오기 
@@ -53,7 +47,12 @@ public class BoardManager : MonoBehaviour
                 m_tilemap.SetTile(new Vector3Int(x, y, 0), tile);// 타일맵에 타일 설정
             }
         }
-        Player.Spawn(this, new Vector2Int(1, 1)); // 플레이어 스폰
+      
+    }
+    public Vector3 CellToWorld(Vector2Int cellIndex)
+    {
+        return m_Grid.GetCellCenterWorld((Vector3Int)(cellIndex));
+    
     }
     public CellData GetCellData(Vector2Int cellIndex)
     {
