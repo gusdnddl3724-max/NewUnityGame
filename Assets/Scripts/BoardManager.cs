@@ -3,13 +3,20 @@ using UnityEngine.Tilemaps;
 
 public class BoardManager : MonoBehaviour
 {
+    public PlayerController Player;
+    private Grid m_Grid;
+
+    public Vector3 CellToWorld(Vector2Int cellIndex)
+    {
+        return m_Grid.GetCellCenterWorld((Vector3Int)(cellIndex));
+    }
     public class CellData
-    { 
-       public bool Passable;
+    {
+        public bool Passable;
 
     }
-    public CellData[,] BoardData;
-    private Tilemap tilemap;
+    public CellData[,] m_BoardData;
+    private Tilemap m_tilemap;
 
     public int width;
     public int height;
@@ -18,31 +25,42 @@ public class BoardManager : MonoBehaviour
 
     void Start()
     {
-        tilemap = GetComponentInChildren<Tilemap>();// 컴포넌트 가져오기
-        BoardData = new CellData[width, height];// 보드 데이터 초기화
+        m_tilemap = GetComponentInChildren<Tilemap>();// 컴포넌트 가져오기
+        m_Grid = GetComponentInChildren<Grid>();// 그리드 컴포넌트 가져오기 
+
+        m_BoardData = new CellData[width, height];// 보드 데이터 초기화
 
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
             {
                 Tile tile;
-                BoardData[x, y] = new CellData(); // 셀 데이터 초기화
+                m_BoardData[x, y] = new CellData(); // 셀 데이터 초기화
                 if (x == 0 || y == 0 || x == width - 1 || y == height - 1)
                 {
                     // 벽 타일 배치
-                     tile = WallTiles[Random.Range(0, WallTiles.Length)];
-                    BoardData[x, y].Passable = false; // 벽은 통과 불가능
+                    tile = WallTiles[Random.Range(0, WallTiles.Length)];
+                    m_BoardData[x, y].Passable = false; // 벽은 통과 불가능
 
                 }
                 else
                 {
                     // 바닥 타일 배치
-                    tile=GroundTiles[Random.Range(0, GroundTiles.Length)];
-                    BoardData[x, y].Passable = true; // 바닥은 통과 가능
+                    tile = GroundTiles[Random.Range(0, GroundTiles.Length)];
+                    m_BoardData[x, y].Passable = true; // 바닥은 통과 가능
 
                 }
-                tilemap.SetTile(new Vector3Int(x, y, 0), tile);// 타일맵에 타일 설정
+                m_tilemap.SetTile(new Vector3Int(x, y, 0), tile);// 타일맵에 타일 설정
             }
         }
+        Player.Spawn(this, new Vector2Int(1, 1)); // 플레이어 스폰
+    }
+    public CellData GetCellData(Vector2Int cellIndex)
+    {
+        if (cellIndex.x < 0 || cellIndex.x >= width || cellIndex.y < 0 || cellIndex.y >= height)// 범위 밖일 때
+        { 
+         return null;
+        }
+        return m_BoardData[cellIndex.x, cellIndex.y];//  셀 데이터 반환
     }
 }
