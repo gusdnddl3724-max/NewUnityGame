@@ -48,7 +48,8 @@ public class PlayerController : MonoBehaviour
 
             if (cellData != null && cellData.Passable)
             {
-               MoveTo(newCellTarget);
+               GameManager.Instance.m_TurnManager.Tick(); // 턴 매니저에 턴이 지났음을 알림
+                MoveTo(newCellTarget);
             }
         }
     }

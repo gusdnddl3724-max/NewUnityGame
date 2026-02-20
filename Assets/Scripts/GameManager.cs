@@ -2,14 +2,28 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-   public BoardManager BoardManager;
+    public static GameManager Instance { get; private set; }   
+
+    public BoardManager BoardManager;
     public PlayerController PlayerController;
 
-    private TrunManager m_TrunManager;
+    public TurnManager m_TurnManager;
 
-    void Start()
+    private void Awake()
     {
-        m_TrunManager = new TrunManager();
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+            Instance = this;
+        
+    }
+    void Start()
+
+    {
+        m_TurnManager = new TurnManager();
 
         BoardManager.Init();
         PlayerController.Spawn(BoardManager, new Vector2Int(1, 1));
