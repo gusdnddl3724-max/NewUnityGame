@@ -1,16 +1,21 @@
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour
 {
+    public GameObject FoodPrefab;
     public class CellData
     {
         public bool Passable;
-
+        public GameObject ContainedObject;    
     }
     public CellData[,] m_BoardData;
     private Tilemap m_tilemap;
     private Grid m_Grid;
+    private List<Vector2Int> m_EmptyCellsList;
 
     public int width;
     public int height;
@@ -21,6 +26,8 @@ public class BoardManager : MonoBehaviour
     {
         m_tilemap = GetComponentInChildren<Tilemap>();// 컴포넌트 가져오기
         m_Grid = GetComponentInChildren<Grid>();// 그리드 컴포넌트 가져오기 
+
+        m_EmptyCellsList = new List<Vector2Int>();
 
         m_BoardData = new CellData[width, height];// 보드 데이터 초기화
 
@@ -47,7 +54,9 @@ public class BoardManager : MonoBehaviour
                 m_tilemap.SetTile(new Vector3Int(x, y, 0), tile);// 타일맵에 타일 설정
             }
         }
-      
+        m_EmptyCellsList.Remove(new Vector2Int(1, 1));
+        GenerateFood();
+
     }
     public Vector3 CellToWorld(Vector2Int cellIndex)
     {
@@ -61,5 +70,26 @@ public class BoardManager : MonoBehaviour
          return null;
         }
         return m_BoardData[cellIndex.x, cellIndex.y];//  셀 데이터 반환
+    }
+
+    
+    void GenerateFood()
+    {
+        int foodCount = 5;
+        for (int i = 0; i < foodCount; i++)
+        {
+          int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
+            Vector2Int coord = m_EmptyCellsList[randomIndex];
+
+            m_EmptyCellsList.RemoveAt(randomIndex);
+            CellData data = m_BoardData[coord.x, coord.y];
+            GameObject newFood = Instantiate(FoodPrefab);
+            newFood.transform.position = CellToWorld(coord);
+            data.ContainedObject = newFood;
+
+
+       
+    
+        }
     }
 }

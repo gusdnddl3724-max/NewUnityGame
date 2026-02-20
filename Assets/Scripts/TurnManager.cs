@@ -12,5 +12,14 @@ public class TurnManager
     {
         m_TurnCount += 1;
         Debug.Log("ео:" + m_TurnCount);
+
+        if (OnTick != null)
+        {
+            OnTick.Invoke();
+        }
     }
+
+    public event System.Action OnTick;
 }
+
+    
