@@ -646,7 +646,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f4622a81bc745448ac73d25c1cb9e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardManager
-  FoodPrefab: []
+  FoodPrefab:
+  - {fileID: 762807357891934661, guid: 051d158bdaaffdb4497a0e30947c6b38, type: 3}
+  - {fileID: -3955094984413636886, guid: 83dd0b923e8380148973f8441ee11e6c, type: 3}
+  - {fileID: 8590692997358775290, guid: 3d2dd051ee77cd742a2e1afc46a9e785, type: 3}
+  WallPrefab: {fileID: 5430684155978838111, guid: 8d2de416ae1449c468f2b4baac779666, type: 3}
   m_EmptyCellsList: []
   width: 8
   height: 8

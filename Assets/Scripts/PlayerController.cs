@@ -49,12 +49,18 @@ public class PlayerController : MonoBehaviour
             if (cellData != null && cellData.Passable)
             {
                GameManager.Instance.m_TurnManager.Tick(); // 턴 매니저에 턴이 지났음을 알림
-                MoveTo(newCellTarget);
-
-                if (cellData.ContainedObject != null) // 셀에 오브젝트가 있는지 확인
+                if (cellData.ContainedObject == null)
                 { 
-                 cellData.ContainedObject.PlayerEnterd(); // 셀에 오브젝트가 있으면 PlayerEnterd 호출
+                 MoveTo(newCellTarget); // 셀에 오브젝트가 없으면 이동
                 }
+                else if(cellData.ContainedObject.PlayerWantsToEnter())
+                {
+                    MoveTo(newCellTarget); // 셀에 오브젝트가 있지만 PlayerWantsToEnter가 true를 반환하면 이동
+                    cellData.ContainedObject.PlayerEnterd(); // PlayerWantsToEnter가 true를 반환하면 PlayerEnterd 호출
+                }    
+
+                
+
             }
         }
     }

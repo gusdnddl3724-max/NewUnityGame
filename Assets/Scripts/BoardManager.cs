@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class BoardManager : MonoBehaviour
 {
     public FoodObject[] FoodPrefab;
+    public WallObject WallPrefab;
     public class CellData
     {
         public bool Passable;
@@ -57,6 +58,7 @@ public class BoardManager : MonoBehaviour
             }
         }
         m_EmptyCellsList.Remove(new Vector2Int(1, 1));
+        GenerateWall();
         GenerateFood();
 
     }
@@ -65,7 +67,7 @@ public class BoardManager : MonoBehaviour
         return m_Grid.GetCellCenterWorld((Vector3Int)(cellIndex));
     
     }
-    public CellData GetCellData(Vector2Int cellIndex)
+    public CellData GetCellData(Vector2Int cellIndex)// 셀 데이터 가져오기
     {
         if (cellIndex.x < 0 || cellIndex.x >= width || cellIndex.y < 0 || cellIndex.y >= height)// 범위 밖일 때
         { 
@@ -84,17 +86,50 @@ public class BoardManager : MonoBehaviour
             Vector2Int coord = m_EmptyCellsList[randomIndex];
 
             m_EmptyCellsList.RemoveAt(randomIndex);
-            CellData data = m_BoardData[coord.x, coord.y];
+            
 
             int prefabIndex = Random.Range(0, FoodPrefab.Length);
             FoodObject newFood = Instantiate(FoodPrefab[prefabIndex]);
 
             newFood.transform.position = CellToWorld(coord);
-            data.ContainedObject = newFood;
+            AddObject(newFood, coord);
 
 
-       
-    
+
+
         }
     }
+    void GenerateWall()
+    {
+        int wallCount = Random.Range(6, 10);
+        for (int i = 0; i < wallCount; ++i)
+        {
+            int randomIndex = Random.Range(0, m_EmptyCellsList.Count);// 빈 셀 리스트에서 랜덤 인덱스 선택
+            Vector2Int coord= m_EmptyCellsList[randomIndex];// 해당 인덱스의 좌표 가져오기
+
+            m_EmptyCellsList.RemoveAt(randomIndex);// 빈 셀 리스트에서 해당 좌표 제거
+            
+            WallObject newWall = Instantiate(WallPrefab);// 벽 오브젝트 생성
+
+            AddObject(newWall, coord);// 벽 오브젝트 추가
+
+        }
+    }
+    public void SetCellTile(Vector2Int cellIndex, Tile tile) // 셀 타일 설정
+    {
+        m_tilemap.SetTile(new Vector3Int(cellIndex.x, cellIndex.y, 0), tile); // 타일맵에 타일 설정
+    }
+    public Tile GetCellTile(Vector2Int cellIndex)
+    {
+        return m_tilemap.GetTile<Tile>(new Vector3Int(cellIndex.x, cellIndex.y, 0)); // 타일맵에서 타일 가져오기
+    }
+
+    void AddObject(CellObject obj, Vector2Int coord)
+    {
+        CellData data = m_BoardData[coord.x, coord.y]; // 셀 데이터 가져오기
+        obj.transform.position = CellToWorld(coord); // 오브젝트 위치 설정
+        data.ContainedObject = obj; // 셀 데이터에 오브젝트 저장
+        obj.Init(coord);// 오브젝트 초기화
+    }
+        
 }
