@@ -6,16 +6,16 @@ using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour
 {
-    public GameObject FoodPrefab;
+    public FoodObject[] FoodPrefab;
     public class CellData
     {
         public bool Passable;
-        public GameObject ContainedObject;    
+        public CellObject ContainedObject;    
     }
     public CellData[,] m_BoardData;
     private Tilemap m_tilemap;
     private Grid m_Grid;
-    private List<Vector2Int> m_EmptyCellsList;
+    public List<Vector2Int> m_EmptyCellsList;
 
     public int width;
     public int height;
@@ -50,6 +50,8 @@ public class BoardManager : MonoBehaviour
                     tile = GroundTiles[Random.Range(0, GroundTiles.Length)];
                     m_BoardData[x, y].Passable = true; // 바닥은 통과 가능
 
+                    m_EmptyCellsList.Add(new Vector2Int(x, y)); // 빈 셀 리스트에 추가
+
                 }
                 m_tilemap.SetTile(new Vector3Int(x, y, 0), tile);// 타일맵에 타일 설정
             }
@@ -76,14 +78,17 @@ public class BoardManager : MonoBehaviour
     void GenerateFood()
     {
         int foodCount = 5;
-        for (int i = 0; i < foodCount; i++)
+        for (int i = 0; i < foodCount; ++i)
         {
           int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
             Vector2Int coord = m_EmptyCellsList[randomIndex];
 
             m_EmptyCellsList.RemoveAt(randomIndex);
             CellData data = m_BoardData[coord.x, coord.y];
-            GameObject newFood = Instantiate(FoodPrefab);
+
+            int prefabIndex = Random.Range(0, FoodPrefab.Length);
+            FoodObject newFood = Instantiate(FoodPrefab[prefabIndex]);
+
             newFood.transform.position = CellToWorld(coord);
             data.ContainedObject = newFood;
 

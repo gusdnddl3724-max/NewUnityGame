@@ -276,6 +276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   BoardManager: {fileID: 1762161406}
   PlayerController: {fileID: 1418848827}
+  UIDoc: {fileID: 2136324152}
 --- !u!4 &149859947
 Transform:
   m_ObjectHideFlags: 0
@@ -645,6 +646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f4622a81bc745448ac73d25c1cb9e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardManager
+  FoodPrefab: []
+  m_EmptyCellsList: []
   width: 8
   height: 8
   GroundTiles:
