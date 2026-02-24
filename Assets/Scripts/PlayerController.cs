@@ -5,8 +5,12 @@ public class PlayerController : MonoBehaviour
 {
     private BoardManager m_board;
     private Vector2Int m_cellPosition;
-    
+    private bool m_GameOver;
 
+    public void GameOver()
+    { 
+    m_GameOver = true;
+    }
     public void Spawn(BoardManager boardManager, Vector2Int cell)
     {
        m_board= boardManager;
@@ -17,8 +21,21 @@ public class PlayerController : MonoBehaviour
     m_cellPosition = cell;
         transform.position = m_board.CellToWorld(cell);
     }
+    public void Init()
+    {
+        m_GameOver = false;
+
+    }
     private void Update()
     {
+        if (m_GameOver)
+        { 
+          if (Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                GameManager.Instance.StartNewGame();
+            }
+          return;
+        }
         Vector2Int newCellTarget = m_cellPosition;
         bool hasMoved = false;
 

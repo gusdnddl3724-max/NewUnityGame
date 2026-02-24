@@ -651,6 +651,7 @@ MonoBehaviour:
   - {fileID: -3955094984413636886, guid: 83dd0b923e8380148973f8441ee11e6c, type: 3}
   - {fileID: 8590692997358775290, guid: 3d2dd051ee77cd742a2e1afc46a9e785, type: 3}
   WallPrefab: {fileID: 5430684155978838111, guid: 8d2de416ae1449c468f2b4baac779666, type: 3}
+  ExitCellPrefab: {fileID: 2961301437362192341, guid: e9f725337e06d374b83495640d2ed33b, type: 3}
   m_EmptyCellsList: []
   width: 8
   height: 8

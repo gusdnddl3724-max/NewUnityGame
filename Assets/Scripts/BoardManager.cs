@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour
 {
     public FoodObject[] FoodPrefab;
     public WallObject WallPrefab;
+    public ExitCellObject ExitCellPrefab;
     public class CellData
     {
         public bool Passable;
@@ -58,6 +59,11 @@ public class BoardManager : MonoBehaviour
             }
         }
         m_EmptyCellsList.Remove(new Vector2Int(1, 1));
+
+        Vector2Int endCoord =new Vector2Int(width-2, height-2);
+        AddObject(Instantiate(ExitCellPrefab), endCoord);
+        m_EmptyCellsList.Remove(endCoord);
+
         GenerateWall();
         GenerateFood();
 
@@ -131,5 +137,29 @@ public class BoardManager : MonoBehaviour
         data.ContainedObject = obj; // 셀 데이터에 오브젝트 저장
         obj.Init(coord);// 오브젝트 초기화
     }
-        
+
+    public void Clean()
+    
+   {
+
+        if (m_BoardData == null)
+        { 
+        return;
+        }
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            { 
+              var cellData= m_BoardData[x, y];
+                if (cellData.ContainedObject != null)
+                { 
+                  Destroy(cellData.ContainedObject.gameObject);
+            
+                }
+                SetCellTile(new Vector2Int(x, y), null);
+            }
+
+        }
+    }   
 }

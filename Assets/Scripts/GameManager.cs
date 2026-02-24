@@ -8,12 +8,18 @@ public class GameManager : MonoBehaviour
     public BoardManager BoardManager;
     public PlayerController PlayerController;
 
+    private VisualElement m_GameOverPanel;
+    private Label m_GameOverMessage;
+
+   
     public TurnManager m_TurnManager;
 
     public UIDocument UIDoc;
     private Label m_FoodLabel;
 
-    private int m_FoodAmount = 100;
+    private int m_FoodAmount = 20;
+
+    private int m_CurrentLevel = 1;
 
     private void Awake()
     {
@@ -32,10 +38,30 @@ public class GameManager : MonoBehaviour
         m_TurnManager = new TurnManager();
         m_TurnManager.OnTick += OnTurnHappen;
 
+      
         m_FoodLabel= UIDoc.rootVisualElement.Q<Label>("FoodLabel");
-        m_FoodLabel.text = "Food: "+ m_FoodAmount;
+       
 
+        m_GameOverPanel = UIDoc.rootVisualElement.Q<VisualElement>("GameOverPanel");
+        m_GameOverMessage = m_GameOverPanel.Q<Label>("GameOverMessage");
+
+
+        StartNewGame();
+
+    }
+
+    public void StartNewGame()
+    {
+        m_GameOverPanel.style.visibility = Visibility.Hidden;
+
+        m_CurrentLevel = 1;
+        m_FoodAmount = 20;
+        m_FoodLabel.text = "Food:"+ m_FoodAmount;
+
+        BoardManager.Clean();
         BoardManager.Init();
+
+        PlayerController.Init ();
         PlayerController.Spawn(BoardManager, new Vector2Int(1, 1));
 
     }
@@ -51,5 +77,20 @@ public class GameManager : MonoBehaviour
      m_FoodAmount +=amoumt;
         m_FoodLabel.text = "Food:" + m_FoodAmount;
 
+        if (m_FoodAmount <= 0)
+        { 
+            PlayerController.GameOver();
+          m_GameOverPanel.style.visibility= Visibility.Visible;
+            m_GameOverMessage.text = "Game Over ";
+        }
+
+    }
+    public void NewLevel()
+    { 
+      BoardManager.Clean();
+      BoardManager.Init();
+        PlayerController.Spawn(BoardManager, new Vector2Int(1, 1));
+
+        m_CurrentLevel++;
     }
 }
