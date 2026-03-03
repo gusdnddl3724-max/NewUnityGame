@@ -6,7 +6,16 @@ public class PlayerController : MonoBehaviour
     private BoardManager m_board;
     private Vector2Int m_cellPosition;
     private bool m_GameOver;
+    private Animator m_Animator;
+    private bool m_IsMoving;
+    private Vector3 m_MoveTaret;
+    public float MoveSpeed = 5f;
+    private void Awake()
+        {
+            m_Animator = GetComponent<Animator>();
+    }
 
+    
     public void GameOver()
     { 
     m_GameOver = true;
@@ -14,12 +23,22 @@ public class PlayerController : MonoBehaviour
     public void Spawn(BoardManager boardManager, Vector2Int cell)
     {
        m_board= boardManager;
-        MoveTo(cell);
+        MoveTo(cell,false);
     }
-    public void MoveTo(Vector2Int cell)
-    { 
-    m_cellPosition = cell;
-        transform.position = m_board.CellToWorld(cell);
+    public void MoveTo(Vector2Int cell, bool immediate)
+    {
+        m_cellPosition = cell;
+        if (immediate)
+        {
+            m_IsMoving = false;
+            transform.position = m_board.CellToWorld(m_cellPosition);
+        }
+        else
+        { 
+          m_IsMoving = true;
+            m_MoveTaret= m_board.CellToWorld(m_cellPosition);
+        }    
+        
     }
     public void Init()
     {
@@ -68,11 +87,11 @@ public class PlayerController : MonoBehaviour
                GameManager.Instance.m_TurnManager.Tick(); // 턴 매니저에 턴이 지났음을 알림
                 if (cellData.ContainedObject == null)
                 { 
-                 MoveTo(newCellTarget); // 셀에 오브젝트가 없으면 이동
+                 MoveTo(newCellTarget, false); // 셀에 오브젝트가 없으면 이동
                 }
                 else if(cellData.ContainedObject.PlayerWantsToEnter())
                 {
-                    MoveTo(newCellTarget); // 셀에 오브젝트가 있지만 PlayerWantsToEnter가 true를 반환하면 이동
+                    MoveTo(newCellTarget, false); // 셀에 오브젝트가 있지만 PlayerWantsToEnter가 true를 반환하면 이동
                     cellData.ContainedObject.PlayerEnterd(); // PlayerWantsToEnter가 true를 반환하면 PlayerEnterd 호출
                 }    
 
@@ -80,5 +99,20 @@ public class PlayerController : MonoBehaviour
 
             }
         }
+        if (m_IsMoving)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, m_MoveTaret, MoveSpeed*Time.deltaTime);
+            if (transform.position==m_MoveTaret)
+            {
+               m_IsMoving = false;
+                m_Animator.SetBool("Moving", false);
+                var cellData = m_board.GetCellData(m_cellPosition);
+                if (cellData.ContainedObject != null)
+                {
+                    cellData.ContainedObject.PlayerEnterd();
+                }// 이동이 완료되면 PlayerEnterd 호출
+            }
+        } return;
     }
+
 }
