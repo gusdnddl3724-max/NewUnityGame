@@ -114,5 +114,9 @@ public class PlayerController : MonoBehaviour
             }
         } return;
     }
+    public Vector2Int Cell
+    {
+        get { return m_cellPosition; }
+    }
 
 }
