@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
           m_IsMoving = true;
             m_MoveTaret= m_board.CellToWorld(m_cellPosition);
         }    
-        
+        m_Animator.SetBool("Moving", m_IsMoving);
     }
     public void Init()
     {
