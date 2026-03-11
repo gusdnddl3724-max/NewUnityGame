@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour
 {
     public FoodObject[] FoodPrefab;
     public WallObject WallPrefab;
+    public Enemy EnemyPrefab;
     public ExitCellObject ExitCellPrefab;
     public class CellData
     {
@@ -66,6 +67,7 @@ public class BoardManager : MonoBehaviour
 
         GenerateWall();
         GenerateFood();
+        GenerateEnemy();
 
     }
     public Vector3 CellToWorld(Vector2Int cellIndex)
@@ -119,6 +121,27 @@ public class BoardManager : MonoBehaviour
 
             AddObject(newWall, coord);// 벽 오브젝트 추가
 
+        }
+    }
+    
+
+    void GenerateEnemy()
+    {
+        int enemyCount = 1;
+        for (int i = 0; i < enemyCount; ++i)
+        {
+            if (m_EmptyCellsList.Count == 0)
+                break;
+
+            int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
+            Vector2Int coord = m_EmptyCellsList[randomIndex];
+
+            m_EmptyCellsList.RemoveAt(randomIndex);
+
+            Enemy newEnemy = Instantiate(EnemyPrefab);
+            newEnemy.transform.position = CellToWorld(coord);
+
+            AddObject(newEnemy, coord);
         }
     }
     public void SetCellTile(Vector2Int cellIndex, Tile tile) // 셀 타일 설정
