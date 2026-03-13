@@ -73,9 +73,16 @@ public class Enemy : CellObject
         {
             if (absXDist > absYDist)
             {
-                if (!tryMoveInY(xDist))
+                if (!tryMoveInX(xDist))
                 { 
-                  tryMoveInX(yDist);
+                  tryMoveInY(yDist);
+                }
+            }
+            else 
+                {
+                if (!tryMoveInY(yDist))
+                { 
+                  tryMoveInX(xDist);
                 }
             }
         }
